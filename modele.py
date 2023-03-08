@@ -7,11 +7,13 @@ import cv2
 import numpy as np
 import math
 
+
 MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
 AGE_INTERVALS = ['(0, 2)', '(4, 6)','(25, 32)', '(8, 12)', '(15, 20)',
                   '(38, 43)', '(48, 53)', '(60, 100)']
 
-#genderList = ['M', 'F']
+
+#listgender = ['M', 'F']
 
 #Model age
 AGE_MODEL = 'deploy_age.prototxt'
