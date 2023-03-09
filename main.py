@@ -3,6 +3,7 @@ import cv2
 import os, sys
 import numpy as np
 import math
+import pickle
 
 MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
 AGE_INTERVALS = ['(0, 3)', '(4, 6)','(7, 12)', '(13,15)','(16, 20)', '(21, 25)', '(26,29)','(30, 35)', '(36,39)','(40, 45)','(46,49)','(50, 55)','(56, 59)','(60, 65)','(66, 70)','(71, 75)','(76, 80)','(81, 85)','(86, 90)','(91, 95)','(96, 100)']
@@ -41,29 +42,23 @@ def face_confidence(face_distance, face_match_threshold=0.6):
     else:
         value = (linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))) * 100
         return str(round(value, 2)) + '%'
+    
 
 class FaceRecognition:
     face_locations = []
     face_encodings = []
     face_names = []
-    known_face_encodings = []
-    known_face_names = []
     process_current_frame = True
 
-    def __init__(self):
-        self.encode_faces()
+    with open("known_face_encodings.pickle", "rb") as f:
+        known_face_encodings = pickle.load(f)
 
-    def encode_faces(self):
-        for image in os.listdir('individuelle'):
-            face_image = face_recognition.load_image_file(f"individuelle/{image}")
-            if len(face_recognition.face_encodings(face_image)) > 0:
-                face_encoding = face_recognition.face_encodings(face_image)[0]
-            else:
-                print(f"No face found in {image}")
-                continue
-            self.known_face_encodings.append(face_encoding)
-            self.known_face_names.append(image.split(".")[0])
-        print(self.known_face_names)
+    with open("known_face_names.pickle", "rb") as f:
+        known_face_names= pickle.load(f)
+
+    def __init__(self):
+        self.known_face_encodings
+        self.known_face_names
 
     def run_recognition(self):
         video_capture = cv2.VideoCapture(0)
