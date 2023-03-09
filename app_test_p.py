@@ -9,7 +9,7 @@ import numpy as np
 import math
 import pickle
 from PIL import Image 
-import main
+import main_thread as main
 
 ##############################################################################################
 #                                 Fonctions appli                                            #
@@ -75,8 +75,8 @@ if run_button:
                 if text.lower() == "tarte":
                     st.write("Demarrage de la webcam en cours")
                     st.session_state.run = True
-                    fr = main.run_recognition()
-                    st.image(fr, channels='BGR', use_column_width=True)
+                    fr = main.FaceRecognition()
+                    st.image(fr.run_recognition, channels='BGR', use_column_width=True)
                 else:
                     st.sidebar.warning(f"Je n'ai pas reconnu la commande: {text}")
             except sr.UnknownValueError:
