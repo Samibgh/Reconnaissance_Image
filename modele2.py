@@ -7,7 +7,6 @@ import cv2
 import numpy as np
 import math
 
-
 MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
 AGE_INTERVALS = ['(0, 2)', '(4, 6)', '(8, 12)', '(15, 20)', '(22, 25)', '(30, 35)', '(40, 45)','(50, 55)']
 #AGE_INTERVALS = ['(0, 2)', '(4, 6)','(25, 32)', '(8, 12)', '(15, 20)',
@@ -22,8 +21,8 @@ age_net = cv2.dnn.readNetFromCaffe(AGE_MODEL, AGE_PROTO)
 #__________
 
 #Model gender
-GENDER_MODEL = 'gender_net.caffemodel'
-GENDER_PROTO = 'deploy_gender.prototxt'
+GENDER_MODEL = 'gender_net1.caffemodel'
+GENDER_PROTO = 'deploy_gender1.prototxt'
 gender_net = cv2.dnn.readNetFromCaffe(GENDER_PROTO, GENDER_MODEL)
 
 
@@ -221,3 +220,7 @@ class FaceRecognition:
 if __name__ == '__main__':
     fr = FaceRecognition()
     fr.run_recognition()
+
+
+
+
