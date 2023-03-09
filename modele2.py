@@ -1,4 +1,3 @@
-
 import face_recognition
 import cv2
 import os, sys
@@ -6,29 +5,24 @@ import numpy as np
 import math
 
 MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
-AGE_INTERVALS = ['(0, 3)', '(4, 6)','(7, 12)', '(13,15)','(16, 20)', '(21, 25)', '(26,29)','(30, 35)', '(36,39)','(40, 45)','(46,49)','(50, 55)']
-#AGE_INTERVALS = ['(0, 2)', '(4, 6)','(25, 32)', '(8, 12)', '(15, 20)',
-                 # '(38, 43)', '(48, 53)', '(60, 100)']
+AGE_INTERVALS = ['(0, 3)', '(4, 6)','(7, 12)', '(13,15)','(16, 20)', '(21, 25)', '(26,29)','(30, 35)', '(36,39)','(40, 45)','(46,49)','(50, 55)','(56, 59)','(60, 65)','(66, 70)','(71, 75)','(76, 80)','(81, 85)','(86, 90)','(91, 95)','(96, 100)']
 
 listgender = ['M', 'F']
 
+models_path = r"models\\"
+images_path = r"individuelle\\"
+
 #Model age
-AGE_MODEL = 'deploy_age.prototxt'
-AGE_PROTO = 'age_net.caffemodel'
+AGE_MODEL = models_path  + 'deploy_age.prototxt'
+AGE_PROTO = models_path + 'age_net.caffemodel'
 age_net = cv2.dnn.readNetFromCaffe(AGE_MODEL, AGE_PROTO)
 #__________
 
 #Model gender
-GENDER_MODEL = 'gender_net1.caffemodel'
-GENDER_PROTO = 'deploy_gender1.prototxt'
+GENDER_MODEL = models_path + 'gender_net1.caffemodel'
+GENDER_PROTO = models_path + 'deploy_gender1.prototxt'
 gender_net = cv2.dnn.readNetFromCaffe(GENDER_PROTO, GENDER_MODEL)
 
-
-
-
-
-
-images_path = r"individuelle\\"
 
 from PIL import Image 
 for img_filename in os.listdir(images_path):
@@ -68,47 +62,7 @@ class FaceRecognition:
                 print(f"No face found in {image}")
                 continue
             self.known_face_encodings.append(face_encoding)
-            self.known_face_names.append(image)
-        print(self.known_face_names)
-
-    def run_recognition(self):
-        video_capture = cv2.VideoCapture(0)
-
-        if not video_capture.isOpened():
-            sys.exit('Video source not found...')
-
-        while True:
-            ret, frame = video_capture.read()
-
-            # Only process every other frame of video to save time
-            if self.process_current_frame:
-                # Resize frame of video to 1/4 size for faster face recognition processing
-                small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
-
-                # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
-                rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
-                # Find all the faces and face encodings
-class FaceRecognition:
-    face_locations = []
-    face_encodings = []
-    face_names = []
-    known_face_encodings = []
-    known_face_names = []
-    process_current_frame = True
-
-    def __init__(self):
-        self.encode_faces()
-
-    def encode_faces(self):
-        for image in os.listdir('individuelle'):
-            face_image = face_recognition.load_image_file(f"individuelle/{image}")
-            if len(face_recognition.face_encodings(face_image)) > 0:
-                face_encoding = face_recognition.face_encodings(face_image)[0]
-            else:
-                print(f"No face found in {image}")
-                continue
-            self.known_face_encodings.append(face_encoding)
-            self.known_face_names.append(image)
+            self.known_face_names.append(image.split(".")[0])
         print(self.known_face_names)
 
     def run_recognition(self):
@@ -141,26 +95,14 @@ class FaceRecognition:
                     # Calculate the shortest distance to face
                     face_distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
                      
-                    
-                    # blob = cv2.dnn.blobFromImage(frame, 1, (227, 227), MODEL_MEAN_VALUES, swapRB=False)
-                    # age_net.setInput(blob)
-                    # age_preds = age_net.forward()
-                    # age = AGE_INTERVALS[age_preds[0].argmax()]
-
-                    # Afficher le nom et l'âge sur la vidéo
-                    #name = self.known_face_names[np.where(matches)[0][0]]
-                    
-
-
-
-
+                    # Get the index of the face with the shortest distance
                     best_match_index = np.argmin(face_distances)
                     if matches[best_match_index]:
                         name = self.known_face_names[best_match_index]
                         confidence = face_confidence(face_distances[best_match_index])
 
                     self.face_names.append(f'{name} ({confidence})')
-                    #self.face_names.append(f"{name}, {age}")
+
 
             self.process_current_frame = not self.process_current_frame
             face_img = frame[0:20,0:20]
@@ -199,12 +141,11 @@ class FaceRecognition:
                 bottom *= 4
                 left *= 4
                 # Create the frame with the name
-                font = cv2.FONT_HERSHEY_SIMPLEX
-                cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-                cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
-                cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.8, (255, 255, 255), 1)
-                cv2.putText(frame, label_age, (left + 6, bottom + 55), font, 1.0, (19, 69, 139), 1)
-                cv2.putText(frame, gender, (left + 6, bottom + 85), font, 1.0, (250, 0, 0), 1)
+                font = cv2.FONT_HERSHEY_DUPLEX
+                cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
+                cv2.putText(frame, name, (left - 100, bottom - 180), font, 0.8, (255, 255, 255), 1)
+                cv2.putText(frame, label_age, (left + 6, bottom + 30), font, 1.0, (255, 255, 0), 1)
+                cv2.putText(frame, gender, (left + 6, bottom + 70), font, 1.0, (0, 0, 255), 1)
 
             # Display the resulting image
             cv2.imshow('Face Recognition', frame)
@@ -218,7 +159,3 @@ class FaceRecognition:
 if __name__ == '__main__':
     fr = FaceRecognition()
     fr.run_recognition()
-
-
-
-
