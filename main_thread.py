@@ -69,6 +69,7 @@ class FaceRecognition:
     with open(f"{encoding_path}known_face_names.pickle", "rb") as f:
         known_face_names= pickle.load(f)
 
+    
     def __init__(self):
         self.known_face_encodings
         self.known_face_names
@@ -77,12 +78,8 @@ class FaceRecognition:
         video_thread = thread.WebcamVideoStream()
         video_thread.start()
 
-        #if not video_thread.isOpened():
-         #   sys.exit('Video source not found...')
-
         while True:
             frame = video_thread.read()
-
             # Only process every other frame of video to save time
             if self.process_current_frame:
 
@@ -185,13 +182,13 @@ class FaceRecognition:
                 font = cv2.FONT_HERSHEY_DUPLEX
                 cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
                 cv2.putText(frame, name, (left - 100, bottom - 180), font, 0.8, (255, 255, 255), 1)
-                cv2.putText(frame, label, (left + 6, bottom + 100), font, 1, (0,240,255), 1)
+                cv2.putText(frame, label, (left + 6, bottom + 100), font, 1, (0,239,255), 1)
                 cv2.putText(frame, label_age, (left + 6, bottom + 30), font, 1.0, (255, 255, 0), 1)
                 cv2.putText(frame, gender, (left + 6, bottom + 70), font, 1.0, (0, 0, 255), 1)
 
             # Display the resulting image
             cv2.imshow('Face Recognition', frame)
-
+            
             # Hit 'q' on the keyboard to quit!
             if cv2.waitKey(1) == ord('q'):
                 break
