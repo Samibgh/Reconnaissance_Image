@@ -180,6 +180,8 @@ def start_camera():
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter('output.mp4', fourcc, 5, (640, 480))
 
+    out.release()  # fin de l'enregistrement mais ça enregistre rien du tout
+
     while True:
         _, frame = camera.read()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -225,11 +227,10 @@ if run_button:
             try:
                 text = r.recognize_google(audio, language='fr-FR')
                 if text.lower() == "tarte":
+                    st.write("Demarrage de la webcam en cours")
                     st.session_state.run = True
-                    start_camera()
-                    # fonctionne pas mais c'est censé être là pour l'instant
                     fr = FaceRecognition()
-                    fr.run_recognition()
+                    st.image(fr.run_recognition(), channels='BGR', use_column_width=True)
                 else:
                     st.sidebar.warning(f"Je n'ai pas reconnu la commande: {text}")
             except sr.UnknownValueError:
