@@ -8,10 +8,10 @@ If you're a conda user, you can create an environment from the ```environment.ym
 
 1. Create the environment from the ```environment.yml``` file:
 
-    ```conda env create -f environment.yml```
+    ```conda env create --name facerecognition -f environment.yml```
 2. Activate the new environment:
-    * Windows: ```activate obj-det```
-    * macOS and Linux: ```source activate obj-det``` 
+    
+    ```conda activate facerecognition```
 
 3. Verify that the new environment was installed correctly:
 
