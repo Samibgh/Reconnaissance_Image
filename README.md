@@ -1,12 +1,31 @@
-# Reconnaissance_Image
-**
+# Reconnaissance Visage Voix
 
+## Dependencies
 
-Pour la reconnaissance vocale 
+Running the application can be done following the instructions above:
 
-```bash
-pip install pyaudio
-pip install speechrecognition
-pip install OpenCV-python
-pip install keras
-```
+If you're a conda user, you can create an environment from the ```environment.yml``` file using the Terminal or an Anaconda Prompt for the following steps:
+
+1. Create the environment from the ```environment.yml``` file:
+
+    ```conda env create -f environment.yml```
+2. Activate the new environment:
+    * Windows: ```activate obj-det```
+    * macOS and Linux: ```source activate obj-det``` 
+
+3. Verify that the new environment was installed correctly:
+
+    ```conda list```
+    
+You can also clone the environment through the environment manager of Anaconda Navigator.
+
+## Use
+
+Within the virtual environment:
+
+```streamlit run main.py```
+
+A web application will open in the prompted URL. The options there are:
+* 
+* 
+
