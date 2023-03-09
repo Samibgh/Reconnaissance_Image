@@ -11,7 +11,8 @@ AGE_INTERVALS = ['(0, 3)', '(4, 6)','(7, 12)', '(13,15)','(16, 20)', '(21, 25)',
 listgender = ['M', 'F']
 
 models_path = r"models\\"
-images_path = r"individuelle\\"
+images_path = r"photos\\"
+encoding_path = r"encoding\\"
 
 #Model age
 AGE_MODEL = models_path  + 'deploy_age.prototxt'
@@ -50,10 +51,10 @@ class FaceRecognition:
     face_names = []
     process_current_frame = True
 
-    with open("known_face_encodings.pickle", "rb") as f:
+    with open(f"{encoding_path}known_face_encodings.pickle", "rb") as f:
         known_face_encodings = pickle.load(f)
 
-    with open("known_face_names.pickle", "rb") as f:
+    with open(f"{encoding_path}known_face_names.pickle", "rb") as f:
         known_face_names= pickle.load(f)
 
     def __init__(self):
