@@ -13,7 +13,8 @@ AGE_INTERVALS = ['(0, 3)', '(4, 6)','(7, 12)', '(13,15)','(16, 20)', '(21, 25)',
 listgender = ['M', 'F']
 
 models_path = r"models\\"
-images_path = r"individuelle\\"
+images_path = r"photos\\"
+encoding_path = r"encoding\\"
 
 #Model age
 AGE_MODEL = models_path  + 'deploy_age.prototxt'
@@ -68,10 +69,10 @@ class FaceRecognition:
     face_names = []
     process_current_frame = True
 
-    with open("known_face_encodings.pickle", "rb") as f:
+    with open(encoding_path + "known_face_encodings.pickle", "rb") as f:
         known_face_encodings = pickle.load(f)
 
-    with open("known_face_names.pickle", "rb") as f:
+    with open(encoding_path + "known_face_names.pickle", "rb") as f:
         known_face_names= pickle.load(f)
 
     def __init__(self):
@@ -166,7 +167,7 @@ class FaceRecognition:
                 cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
                 cv2.putText(frame, name, (left - 100, bottom - 180), font, 0.8, (255, 255, 255), 1)
                 cv2.putText(frame, label_age, (left + 6, bottom + 30), font, 1.0, (255, 255, 0), 1)
-                #cv2.putText(frame, gender, (left + 6, bottom + 70), font, 1.0, (0, 0, 255), 1)
+                cv2.putText(frame, gender, (left + 20, bottom + 90), font, 1.0, (0, 0, 255), 1)
                 
                 cv2.putText(frame, predicted_emotion, (left + 6, bottom + 70), font, 1.0, (0, 0, 255), 1)
 
