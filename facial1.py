@@ -1,4 +1,3 @@
-
 import face_recognition
 import cv2
 import face_recognition
@@ -6,6 +5,28 @@ import os, sys
 import cv2
 import numpy as np
 import math
+
+
+MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
+AGE_INTERVALS = ['(0, 2)', '(4, 6)', '(8, 12)', '(15, 20)', '(22, 25)', '(30, 35)', '(40, 45)','(50, 55)']
+#AGE_INTERVALS = ['(0, 2)', '(4, 6)','(25, 32)', '(8, 12)', '(15, 20)',
+                 # '(38, 43)', '(48, 53)', '(60, 100)']
+
+listgender = ['M', 'F']
+
+#Model age
+AGE_MODEL = 'deploy_age.prototxt'
+AGE_PROTO = 'age_net.caffemodel'
+age_net = cv2.dnn.readNetFromCaffe(AGE_MODEL, AGE_PROTO)
+#__________
+
+#Model gender
+GENDER_MODEL = 'gender_net.caffemodel'
+GENDER_PROTO = 'deploy_gender.prototxt'
+gender_net = cv2.dnn.readNetFromCaffe(GENDER_PROTO, GENDER_MODEL)
+
+
+
 
 
 
@@ -68,6 +89,7 @@ class FaceRecognition:
 
                 # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
                 rgb_small_frame = cv2.cvtColor(small_frame, cv2.COLOR_BGR2RGB)
+                # Find all the faces and face encodings
 class FaceRecognition:
     face_locations = []
     face_encodings = []
@@ -120,6 +142,19 @@ class FaceRecognition:
 
                     # Calculate the shortest distance to face
                     face_distances = face_recognition.face_distance(self.known_face_encodings, face_encoding)
+                     
+                    
+                    # blob = cv2.dnn.blobFromImage(frame, 1, (227, 227), MODEL_MEAN_VALUES, swapRB=False)
+                    # age_net.setInput(blob)
+                    # age_preds = age_net.forward()
+                    # age = AGE_INTERVALS[age_preds[0].argmax()]
+
+                    # Afficher le nom et l'âge sur la vidéo
+                    #name = self.known_face_names[np.where(matches)[0][0]]
+                    
+
+
+
 
                     best_match_index = np.argmin(face_distances)
                     if matches[best_match_index]:
@@ -127,20 +162,51 @@ class FaceRecognition:
                         confidence = face_confidence(face_distances[best_match_index])
 
                     self.face_names.append(f'{name} ({confidence})')
+                    #self.face_names.append(f"{name}, {age}")
 
             self.process_current_frame = not self.process_current_frame
+            face_img = frame[0:20,0:20]
+            blob = cv2.dnn.blobFromImage(face_img, 1.0,size=(227, 227),
+				swapRB=False)
 
             # Display the results
             for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
                 # Scale back up face locations since the frame we detected in was scaled to 1/4 size
+                face_img = frame[max(0,left-20): min(top+20,frame.shape[0]-1),
+                   max(0,right-20):min(bottom+20, frame.shape[1]-1)]
+        
+                if len(face_img) >0 :
+            
+                    blob = cv2.dnn.blobFromImage(face_img, 1.0, (227, 227),
+                        (78.4263377603, 87.7689143744, 114.895847746),
+                        swapRB=False)
+
+                
+                # Predict Age
+                age_net.setInput(blob)
+                age_preds = age_net.forward()
+                
+                i = age_preds[0].argmax()
+                age = AGE_INTERVALS[i]
+                label_age = f"Age:{age} "
+
+
+                 # Predict gender
+                gender_net.setInput(blob)
+                genderPreds = gender_net.forward()
+                gender = listgender[genderPreds[0].argmax()]
+                
                 top *= 4
                 right *= 4
                 bottom *= 4
                 left *= 4
                 # Create the frame with the name
+                font = cv2.FONT_HERSHEY_SIMPLEX
                 cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
-                cv2.putText(frame, name, (left + 6, bottom - 6), cv2.FONT_HERSHEY_DUPLEX, 0.8, (255, 255, 255), 1)
+                cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.8, (255, 255, 255), 1)
+                cv2.putText(frame, label_age, (left + 6, bottom + 55), font, 1.0, (19, 69, 139), 1)
+                cv2.putText(frame, gender, (left + 6, bottom + 85), font, 1.0, (250, 0, 0), 1)
 
             # Display the resulting image
             cv2.imshow('Face Recognition', frame)

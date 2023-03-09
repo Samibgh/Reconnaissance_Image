@@ -9,11 +9,11 @@ import math
 
 
 MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
-AGE_INTERVALS = ['(0, 2)', '(4, 6)','(25, 32)', '(8, 12)', '(15, 20)',
-                  '(38, 43)', '(48, 53)', '(60, 100)']
+AGE_INTERVALS = ['(0, 2)', '(4, 6)', '(8, 12)', '(15, 20)', '(22, 25)', '(30, 35)', '(40, 45)','(50, 55)']
+#AGE_INTERVALS = ['(0, 2)', '(4, 6)','(25, 32)', '(8, 12)', '(15, 20)',
+                 # '(38, 43)', '(48, 53)', '(60, 100)']
 
-
-#listgender = ['M', 'F']
+listgender = ['M', 'F']
 
 #Model age
 AGE_MODEL = 'deploy_age.prototxt'
@@ -22,9 +22,9 @@ age_net = cv2.dnn.readNetFromCaffe(AGE_MODEL, AGE_PROTO)
 #__________
 
 #Model gender
-#GENDER_MODEL = 'gender_net.caffemodel'
-#GENDER_PROTO = 'gender_deploy.prototxt'
-#gender_net = cv2.dnn.readNetFromCaffe(GENDER_PROTO, GENDER_MODEL)
+GENDER_MODEL = 'gender_net.caffemodel'
+GENDER_PROTO = 'deploy_gender.prototxt'
+gender_net = cv2.dnn.readNetFromCaffe(GENDER_PROTO, GENDER_MODEL)
 
 
 
@@ -166,6 +166,9 @@ class FaceRecognition:
                     #self.face_names.append(f"{name}, {age}")
 
             self.process_current_frame = not self.process_current_frame
+            face_img = frame[0:20,0:20]
+            blob = cv2.dnn.blobFromImage(face_img, 1.0,size=(227, 227),
+				swapRB=False)
 
             # Display the results
             for (top, right, bottom, left), name in zip(self.face_locations, self.face_names):
@@ -187,6 +190,12 @@ class FaceRecognition:
                 i = age_preds[0].argmax()
                 age = AGE_INTERVALS[i]
                 label_age = f"Age:{age} "
+
+
+                 # Predict gender
+                gender_net.setInput(blob)
+                genderPreds = gender_net.forward()
+                gender = listgender[genderPreds[0].argmax()]
                 
                 top *= 4
                 right *= 4
@@ -198,6 +207,7 @@ class FaceRecognition:
                 cv2.rectangle(frame, (left, bottom - 35), (right, bottom), (0, 0, 255), cv2.FILLED)
                 cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.8, (255, 255, 255), 1)
                 cv2.putText(frame, label_age, (left + 6, bottom + 55), font, 1.0, (19, 69, 139), 1)
+                cv2.putText(frame, gender, (left + 6, bottom + 85), font, 1.0, (250, 0, 0), 1)
 
             # Display the resulting image
             cv2.imshow('Face Recognition', frame)
@@ -211,5 +221,3 @@ class FaceRecognition:
 if __name__ == '__main__':
     fr = FaceRecognition()
     fr.run_recognition()
-
-
