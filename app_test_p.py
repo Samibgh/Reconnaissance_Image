@@ -9,8 +9,7 @@ import numpy as np
 import math
 import pickle
 from PIL import Image 
-import main_thread
-
+import main
 
 ##############################################################################################
 #                                 Fonctions appli                                            #
@@ -76,7 +75,7 @@ if run_button:
                 if text.lower() == "tarte":
                     st.write("Demarrage de la webcam en cours")
                     st.session_state.run = True
-                    fr = main_thread.run_recognition()
+                    fr = main.run_recognition()
                     st.image(fr, channels='BGR', use_column_width=True)
                 else:
                     st.sidebar.warning(f"Je n'ai pas reconnu la commande: {text}")
