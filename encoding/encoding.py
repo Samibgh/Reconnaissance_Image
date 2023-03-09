@@ -5,8 +5,8 @@ import pickle
 known_face_encodings = []
 known_face_names = []
 
-for image in os.listdir('individuelle'):
-    face_image = face_recognition.load_image_file(f"individuelle/{image}")
+for image in os.listdir('photos'):
+    face_image = face_recognition.load_image_file(f"photos/{image}")
     if len(face_recognition.face_encodings(face_image)) > 0:
         face_encoding = face_recognition.face_encodings(face_image)[0]
     else:
