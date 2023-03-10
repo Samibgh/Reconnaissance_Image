@@ -9,6 +9,8 @@ If you're a conda user, you can create an environment from the ```environment.ym
 1. Create the environment from the ```environment.yml``` file:
 
     ```conda env create --name facerecognition -f environment.yml```
+   * Make sure you are in the place where you cloned the github.
+    
 2. Activate the new environment:
     
     ```conda activate facerecognition```
