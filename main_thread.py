@@ -23,7 +23,7 @@ AGE_INTERVALS = ['(0, 3)', '(4, 6)','(7, 12)', '(13,15)','(16, 20)', '(21, 25)',
 listgender = ['F', 'M']
 
 models_path = r"models\\"
-images_path = r"photos\\"
+images_path = r"individuelle\\"
 encoding_path = r"encoding\\"
 
 #Model age

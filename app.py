@@ -9,7 +9,8 @@ import math
 import pickle
 from PIL import Image 
 import thread
-import main_thread as main
+import warnings
+
 
 ##############################################################################################
 #                                 Generation de modele
@@ -81,6 +82,8 @@ class FaceRecognition:
         self.known_face_names
 
     def run_recognition(self):
+        stframe = st.empty()
+
         video_thread = thread.WebcamVideoStream()
         video_thread.start()
 
@@ -193,9 +196,11 @@ class FaceRecognition:
                 cv2.putText(frame, gender, (left + 6, bottom + 70), font, 1.0, (0, 0, 255), 1)
 
             # Display the resulting image
-            cv2.imshow('Face Recognition', frame)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             
-            # Hit 'q' on the keyboard to quit!
+            stframe.image(frame)
+            
+            #Hit 'q' on the keyboard to quit!
             if cv2.waitKey(1) == ord('q'):
                 break
         # Release handle to the webcam
@@ -205,6 +210,13 @@ class FaceRecognition:
 ##############################################################################################
 #                                 Fonctions appli                                            #
 ##############################################################################################
+
+
+import cv2
+import streamlit as st
+
+stop_button = st.sidebar.button("Arrêter la webcam")
+warnings.filterwarnings("ignore")
 
 def start_camera():
     st.title("Webcam Live Feed")
@@ -219,7 +231,7 @@ def start_camera():
 
     out.release()  # fin de l'enregistrement mais ça enregistre rien du tout
 
-    while True:
+    while st.session_state.run:
         _, frame = camera.read()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         FRAME_WINDOW.image(frame)
@@ -235,16 +247,20 @@ def start_camera():
                 audio = r.listen(source, phrase_time_limit=5)
                 try:
                     text = r.recognize_google(audio, language='fr-FR')
-                    if text.lower() == "arrêt":
+                    if text.lower() == "arrête":
                         st.session_state.run = False
                         st.sidebar.warning('Arrêt de la webcam')
                     else:
-                        st.sidebar.warning(f"Je n'ai pas reconnu la commande: {text}")   
+                        st.sidebar.warning(f"Je n'ai pas reconnu la commande: {text}")
                 except sr.UnknownValueError:
                     st.sidebar.warning("Je n'ai pas entendu")
                 except sr.RequestError as e:
                     st.error(f"Erreur; {e}")
                 time.sleep(4)
+                
+        if stop_button:
+            st.session_state.run = False
+            break
     st.session_state.listen_for_commands = False       
 
 
@@ -277,9 +293,3 @@ if run_button:
                 st.sidebar.warning("Je n'ai pas entendu")
             except sr.RequestError as e:
                 st.sidebar.error(f"Erreur; {e}")
-
-#arret = st.checkbox("arreter la video")
-
-#if arret:
-#    video_capture.release()
-#    cv2.destroyAllWindows()
