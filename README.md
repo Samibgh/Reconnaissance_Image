@@ -29,3 +29,31 @@ A web application will open in the prompted URL. The options there are:
 * 
 * 
 
+#-#
+
+## Dépendances
+L'exécution de l'application peut être effectuée en suivant les instructions ci-dessous :
+
+Si vous êtes un utilisateur de conda, vous pouvez créer un environnement à partir du fichier environment.yml en utilisant le Terminal ou un Anaconda Prompt pour les étapes suivantes :
+
+Créez l'environnement à partir du fichier ```environment.yml``` :
+
+```conda env create --name facerecognition -f environment.yml```
+
+Activez le nouvel environnement :
+
+```conda activate facerecognition```
+
+Vérifiez que le nouvel environnement a été installé correctement :
+
+```conda list```
+
+Vous pouvez également cloner l'environnement via le gestionnaire d'environnement d'Anaconda Navigator.
+
+## Utilisation
+Dans l'environnement virtuel :
+
+```streamlit run app.py```
+
+Une application web s'ouvrira à l'URL indiquée. Les options disponibles sont :
+*
