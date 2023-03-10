@@ -125,7 +125,7 @@ class FaceRecognition:
 
                     self.face_names.append(f'{name} ({confidence})')
 
-
+                label =""
                 list_emotions =[]
                 list_emotions_positions =[]
                 for (x,y,w,h) in faces:
