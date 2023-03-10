@@ -5,7 +5,8 @@ import numpy as np
 import math
 import pickle
 import thread
-
+from PIL import Image 
+import streamlit as st
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
@@ -16,16 +17,16 @@ from keras_preprocessing.image import img_to_array
 face_classifier = cv2.CascadeClassifier('models/haarcascade_frontalface_default.xml')
 classifier =load_model('models/Emotion_detector.h5')
 
-class_labels = ['Angry','Happy','Neutral','Sad','Surprise']
 MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
 AGE_INTERVALS = ['(0, 3)', '(4, 6)','(7, 12)', '(13,15)','(16, 20)', '(21, 25)', '(26,29)','(30, 35)', '(36,39)','(40, 45)','(46,49)','(50, 55)','(56, 59)','(60, 65)','(66, 70)','(71, 75)','(76, 80)','(81, 85)','(86, 90)','(91, 95)','(96, 100)']
 
-listgender = ['F', 'M']
+listgender = ['M', 'F']
 
 models_path = r"models\\"
 images_path = r"individuelle\\"
 encoding_path = r"encoding\\"
 
+class_labels = ['Angry','Happy','Neutral','Sad','Surprised']
 #Model age
 AGE_MODEL = models_path  + 'deploy_age.prototxt'
 AGE_PROTO = models_path + 'age_net.caffemodel'
@@ -38,14 +39,13 @@ GENDER_PROTO = models_path + 'deploy_gender1.prototxt'
 gender_net = cv2.dnn.readNetFromCaffe(GENDER_PROTO, GENDER_MODEL)
 
 
-from PIL import Image 
+
 for img_filename in os.listdir(images_path):
     
     img = Image.open(images_path + img_filename )
     new_image = img.resize((1200,1600))
     new_image.save(os.path.join(images_path, str(img_filename)))
 
-# Helper
 def face_confidence(face_distance, face_match_threshold=0.6):
     range = (1.0 - face_match_threshold)
     linear_val = (1.0 - face_distance) / (range * 2.0)
@@ -55,7 +55,6 @@ def face_confidence(face_distance, face_match_threshold=0.6):
     else:
         value = (linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))) * 100
         return str(round(value, 2)) + '%'
-    
 
 class FaceRecognition:
     face_locations = []
@@ -75,6 +74,8 @@ class FaceRecognition:
         self.known_face_names
 
     def run_recognition(self):
+        stframe = st.empty()
+
         video_thread = thread.WebcamVideoStream()
         video_thread.start()
 
@@ -187,14 +188,13 @@ class FaceRecognition:
                 cv2.putText(frame, gender, (left + 6, bottom + 70), font, 1.0, (0, 0, 255), 1)
 
             # Display the resulting image
-            cv2.imshow('Face Recognition', frame)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             
-            # Hit 'q' on the keyboard to quit!
+            stframe.image(frame)
+            
+            #Hit 'q' on the keyboard to quit!
             if cv2.waitKey(1) == ord('q'):
                 break
         # Release handle to the webcam
         video_thread.stop()
         cv2.destroyAllWindows()
-if __name__ == '__main__':
-    fr = FaceRecognition()
-    fr.run_recognition()
