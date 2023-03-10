@@ -23,7 +23,7 @@ You can also clone the environment through the environment manager of Anaconda N
 
 Within the virtual environment:
 
-```streamlit run main.py```
+```streamlit run app.py```
 
 A web application will open in the prompted URL. The options there are:
 * 
