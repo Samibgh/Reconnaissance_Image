@@ -1,5 +1,10 @@
 # Reconnaissance Visage Voix
 
+* [English](#English)
+* [Français](#Français)
+
+
+# English
 ## Dependencies
 
 Running the application can be done following the instructions above:
@@ -32,6 +37,8 @@ A web application will open in the prompted URL. The options there are:
 * 
 
 #-#
+
+# Français
 
 ## Dépendances
 L'exécution de l'application peut être effectuée en suivant les instructions ci-dessous :
