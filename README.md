@@ -33,10 +33,11 @@ Within the virtual environment:
 ```streamlit run app.py```
 
 A web application will open in the prompted URL. The options there are:
-* 
-* 
+* checkbox for voice command: say "tarte"
+* button to turn on the cam with a click
+* button on the right to stop the cam
 
-#-#
+At the end, if the command "ctrl-c" in your terminal doesn't stop the warning, kill the terminal.
 
 # Français
 
@@ -65,4 +66,9 @@ Dans l'environnement virtuel :
 ```streamlit run app.py```
 
 Une application web s'ouvrira à l'URL indiquée. Les options disponibles sont :
-*
+* case à cocher pour commade vocal : dire "tarte"
+* bouton pour allumer la cam avec un clique
+* bouton à droit pour arrêter la cam
+
+
+à la fin de votre utilisation, si le ctrl-c sur votre terminal n'arrête pas le message alors kill le terminal.
